@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+joblib
+jupyter
+
+Install everything with:
+
+pip install -r requirements.txt
