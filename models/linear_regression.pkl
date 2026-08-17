@@ -1,0 +1,72 @@
+import os
+import joblib
+
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LinearRegression
+
+
+# 1. Load California Housing dataset
+data = fetch_california_housing()
+
+X = data.data
+y = data.target
+
+
+# 2. Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42
+)
+
+
+# 3. Create Linear Regression pipeline
+linear_regression = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LinearRegression())
+])
+
+
+# 4. Train model
+linear_regression.fit(X_train, y_train)
+
+
+# 5. Create models directory
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+model_dir = os.path.join(base_dir, "models")
+
+os.makedirs(model_dir, exist_ok=True)
+
+
+# 6. Save trained model
+model_path = os.path.join(
+    model_dir,
+    "linear_regression.pkl"
+)
+
+joblib.dump(linear_regression, model_path)
+
+
+print("Linear Regression model trained successfully.")
+print(f"Model saved at: {model_path}")
+
+import joblib
+
+model = joblib.load("models/linear_regression.pkl")
+
+prediction = model.predict([[
+    8.3252,   # MedInc
+    41.0,      # HouseAge
+    6.9841,    # AveRooms
+    1.0238,    # AveBedrms
+    322.0,     # Population
+    2.5556,    # AveOccup
+    37.88,     # Latitude
+    -122.23    # Longitude
+]])
+
+print("Predicted house value:", prediction[0])
